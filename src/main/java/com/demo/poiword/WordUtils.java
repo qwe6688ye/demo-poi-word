@@ -30,7 +30,8 @@ public class WordUtils {
      * @Date 2020/8/10 15:29
      * @param path:word模板路径
 	 * @param params:模板中需要替换的参数可多个传递 比如 若想文字能够多行，在参数Map<String,Object>中的Object访如List<string>
-     *               若是传递图片 参数Map<String,Object>中的Object为Map<String,Obejct>
+     *               若是传递图片 参数Map<String,Object>中的Object为Map<String,Obejct>   若是一个参数处要传入多张图片Object就为List<Map<String,Object>
+     *              在传入多张图片的时候 Map中设置style ,style=1 代表图片并排插入，style=2代表图片竖排插入
      * @param filename:导出的word文件名
 	 * @param response:
      * @return void
@@ -184,10 +185,10 @@ public class WordUtils {
         Integer width=bi.getWidth();
         Integer heigh=bi.getHeight();
         Double much=180.0/width;
-        //图片原长宽
+        //图片按宽180 比例缩放
         run.addPicture(is,getPictureType(pic.get("picType").toString()),"", Units.toEMU(180),Units.toEMU(heigh*much));
-        //固定长宽
-//        run.addPicture(is,getPictureType(pic.get("picType").toString()),"",Units.toEMU(200),Units.toEMU(360));
+        //图片原长宽
+//        run.addPicture(is,getPictureType(pic.get("picType").toString()),"",Units.toEMU(width),Units.toEMU(heigh));
         bi=null;
     }
 
