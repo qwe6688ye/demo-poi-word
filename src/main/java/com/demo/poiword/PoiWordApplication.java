@@ -6,12 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PoiWordApplication {
 
-    /* *
+
+    /**
+     * description:
      *
-     *
-     * @author yna
-     * @date 2020/8/10 14:59
-     * @param [args]
+     * @Author yna
+     * @Date 2020/8/13 15:07
+     * @param args:
      * @return void
      */
     public static void main(String[] args) {
