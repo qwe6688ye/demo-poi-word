@@ -18,20 +18,15 @@ import java.util.regex.Pattern;
 
 @Component
 public class WordUtils {
-
-    //path  模板路径
-    //params 要替换的模板参数
-    //filename 导出的word文件名称
-
     /**
      * description:
      *          导出word模板
-     * @Author yna
+     * @Author any
      * @Date 2020/8/10 15:29
      * @param path:word模板路径
 	 * @param params:模板中需要替换的参数可多个传递 比如 若想文字能够多行，在参数Map<String,Object>中的Object访如List<string>
      *               若是传递图片 参数Map<String,Object>中的Object为Map<String,Obejct>   若是一个参数处要传入多张图片Object就为List<Map<String,Object>
-     *              在传入多张图片的时候 Map中设置style ,style=1 代表图片并排插入，style=2代表图片竖排插入
+     *              在传入多张图片的时候 Map中设置style ,style=1 代表图片并排插入，style=2代表图片竖排插入，设置imgpath，即图片路径
      * @param filename:导出的word文件名
 	 * @param response:
      * @return void
@@ -136,15 +131,13 @@ public class WordUtils {
         for (int i=0;i<parags.size();i++){
             cell.removeParagraph(i);
         }
-        InputStream is=null;
-
         if(datatype.equals(0)){
             return;
         }else if(datatype.equals(1)){
             //处理单张图片
             XWPFParagraph parag=cell.addParagraph();
             Map<String,Object> pic=(Map<String,Object>)params.get(key);
-            insertImg(pic,parag,is);
+            insertImg(pic,parag);
         }else if(datatype.equals(2)) {
             //处理多涨图片
             List<Map<String,Object>> pics=(List<Map<String,Object>>)params.get(key);
@@ -163,32 +156,37 @@ public class WordUtils {
                         para = cell.addParagraph();
                     }
                 }
-                insertImg(pic, para, is);
+                insertImg(pic, para);
                 count++;
             }
         }
-
-        close(is);
-
     }
 
 
     //插入图片   run创建
-    private  void insertImg(Map<String,Object> pic,XWPFParagraph para,InputStream is) throws IOException, InvalidFormatException {
+    private  void insertImg(Map<String,Object> pic,XWPFParagraph para) throws IOException, InvalidFormatException {
         if(pic.get("imgpath").toString()==null)
             return;
-        is=new FileInputStream(pic.get("imgpath").toString());
-        BufferedImage bi= ImageIO.read(new File(pic.get("imgpath").toString()));
+        String picpath=pic.get("imgpath").toString();
+        InputStream is=null;
+        BufferedImage bi=null;
+        if(picpath.startsWith("http")) {
+            is=HttpUtils.getFileStream(picpath);
+            bi=ImageIO.read(HttpUtils.getFileStream(picpath));
+        }else {
+            is = new FileInputStream(picpath);
+            bi=ImageIO.read(new File(picpath));
+        }
         XWPFRun run =para.createRun();
-
         //原图片的长宽
         Integer width=bi.getWidth();
         Integer heigh=bi.getHeight();
-        Double much=180.0/width;
-        //图片按宽180 比例缩放
-        run.addPicture(is,getPictureType(pic.get("picType").toString()),"", Units.toEMU(180),Units.toEMU(heigh*much));
+        Double much=80.0/width;
+        //图片按宽80 比例缩放
+        run.addPicture(is,getPictureType(picpath.substring(picpath.lastIndexOf(".")+1)),"", Units.toEMU(80),Units.toEMU(heigh*much));
         //图片原长宽
 //        run.addPicture(is,getPictureType(pic.get("picType").toString()),"",Units.toEMU(width),Units.toEMU(heigh));
+        close(is);
         bi=null;
     }
 
