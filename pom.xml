@@ -23,7 +23,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+<<<<<<< HEAD
     <!--POI的版本一定要高一点，低版本会出现导出的word中图片无法显示的BUG-->
+=======
+
+>>>>>>> 620d3b1a5311b01f5fd49b3fdc870b3d93f23318
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
